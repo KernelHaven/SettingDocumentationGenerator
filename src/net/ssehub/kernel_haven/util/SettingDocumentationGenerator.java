@@ -238,7 +238,7 @@ public class SettingDocumentationGenerator {
                 if (setting.getType() == Type.SETTING_LIST) {
                     key += ".0";
                 }
-                result.append(key).append(" = ");
+                result.append(key).append(" =");
                 result.append("\n\n");
             }
             
