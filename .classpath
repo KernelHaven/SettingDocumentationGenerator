@@ -10,7 +10,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/KconfigReaderExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MetricHaven"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NonBooleanUtils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SrcMlExtractor"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/srcMLExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TypeChefExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/UnDeadAnalyzer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/UndertakerExtractor"/>

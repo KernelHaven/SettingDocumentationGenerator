@@ -306,7 +306,7 @@ public class SettingDocumentationGenerator {
         // extractors
         generator.addSettingsFromClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
         generator.addSettingsFromClassPath(new File("../KconfigReaderExtractor/bin"), "KconfigReaderExtractor");
-        generator.addSettingsFromClassPath(new File("../SrcMlExtractor/bin"), "SrcMlExtractor");
+        generator.addSettingsFromClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
         generator.addSettingsFromClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
         generator.addSettingsFromClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
         
