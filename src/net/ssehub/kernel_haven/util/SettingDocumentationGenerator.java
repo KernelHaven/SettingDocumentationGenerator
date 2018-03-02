@@ -302,6 +302,7 @@ public class SettingDocumentationGenerator {
         generator.addSettingsFromClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");
         generator.addSettingsFromClassPath(new File("../MetricHaven/bin"), "MetricHaven");
         generator.addSettingsFromClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
+        generator.addSettingsFromClassPath(new File("../ConfigurationMismatchAnalysis/bin"), "ConfigurationMismatchAnalysis");
         
         // extractors
         generator.addSettingsFromClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
