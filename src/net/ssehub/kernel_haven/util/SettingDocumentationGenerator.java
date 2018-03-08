@@ -55,8 +55,9 @@ public class SettingDocumentationGenerator {
             "#  * Path: A path value. The file denoted by this does not have to exist.\n" + 
             "#  * Existing File: A path value for an existing file. If the specified file\n" + 
             "#                   does not exist, then an exception is thrown. This can either\n" + 
-            "#                   be relative to the current working directory or an absolute\n" + 
-            "#                   path.\n" + 
+            "#                   be absolute, relative to the current working directory or\n" + 
+            "#                   relative to the source_tree setting (first file found in\n" + 
+            "#                   this order is used).\n" + 
             "#  * Existing Directory: A path value for an existing directory. If the\n" + 
             "#                        specified directory does not exist, then an exception\n" + 
             "#                        is thrown. This can either be relative to the current\n" + 
@@ -72,7 +73,7 @@ public class SettingDocumentationGenerator {
             "#                            key.2 = c\n" + 
             "#                          Defines the list [\"a\", \"b\", \"c\"].\n" + 
             "#\n" + 
-            "# This was automatically generated on: ";
+            "# This was automatically generated on:";
     
     private List<String> names;
     
