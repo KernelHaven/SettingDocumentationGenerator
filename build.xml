@@ -5,45 +5,45 @@
 	<description>Builds config_template.properties with the SettingDocumentationGenerator</description>
 
 	<!-- Load macro files for locations to download jars from; we don't call any targets from it -->
-    	<!-- Load Marcros on Jenkins -->
-    	<include file="../../KernelHaven_Infrastructure/workspace/KernelHavenMacros.xml" as="KH_Common" optional="true" />
-    	<!-- Load Marcros in Eclipse -->
-    	<include file="../KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+	<!-- Load Marcros on Jenkins -->
+	<include file="../../KernelHaven_Infrastructure/workspace/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+	<!-- Load Marcros in Eclipse -->
+	<include file="../KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
 
 	<!-- define our own directories -->
-    <property name="build.dir" value="${basedir}/build" />
-    <property name="kh_jars.dir" value="${build.dir}/kernel_haven_jars" />
-    <property name="classes.dir" value="${build.dir}/classes" />
-    <property name="gen.dir" value="${build.dir}/generated" />
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="kh_jars.dir" value="${build.dir}/kernel_haven_jars" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="gen.dir" value="${build.dir}/generated" />
 	<property name="src.dir" value="${basedir}/src" />
-	
+
 	<!-- class path for compiling and running; includes compiled classes and all KH jars -->
 	<path id="classpath.project">
-        <pathelement path="${classes.dir}" />
+		<pathelement path="${classes.dir}" />
 		<fileset dir="${kh_jars.dir}">
 			<include name="*.jar" />
 		</fileset>
-    </path>
+	</path>
 
 	<!-- called by jenkins; cleans build dir and runs generator -->
 	<target name="jenkins">
 		<antcall target="clean" />
 		<antcall target="runSettingDocumentGenerator" />
 	</target>
-	
+
 	<!-- cleans the build directory -->
 	<target name="clean">
-        <delete dir="${build.dir}" />
+		<delete dir="${build.dir}" />
 	</target>
 
 	<!-- generates all necessary folders -->
 	<target name="prepare.folders">
-        <mkdir dir="${build.dir}" />
-        <mkdir dir="${kh_jars.dir}" />
-        <mkdir dir="${classes.dir}" />
-        <mkdir dir="${gen.dir}" />
-    </target>
-	
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${kh_jars.dir}" />
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${gen.dir}" />
+	</target>
+
 	<!-- downloads all KernelHaven jars (infrastructure and plugins) from Jenkins -->
 	<target name="downloadjars" depends="prepare.folders">
 		<get src="${infrastructure.location.core_src}" dest="${kh_jars.dir}/kernelhaven.jar" />
@@ -60,17 +60,17 @@
 		<get src="${NonBooleanUtils.location}" dest="${kh_jars.dir}/nonbooleanutils.jar" />
 		<get src="${ConfigurationMismatchAnalysis.location}" dest="${kh_jars.dir}/configurationmismatchanalyis.jar" />
 	</target>
-	
+
 	<!-- compiles the SettingDocumentationGenerator -->
 	<target name="compile" depends="downloadjars">
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
-            <classpath refid="classpath.project" />
-        </javac>
-    </target>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
+			<classpath refid="classpath.project" />
+		</javac>
+	</target>
 
 	<!-- runs the SettingDocumentationGenerator; output is in build/gen/config_template.properties -->
 	<target name="runSettingDocumentGenerator" depends="compile">
-		<java classname="net.ssehub.kernel_haven.util.SettingDocumentationGenerator" failonerror="true" output="${gen.dir}/config_template.properties" >
+		<java classname="net.ssehub.kernel_haven.util.SettingDocumentationGenerator" failonerror="true" output="${gen.dir}/config_template.properties">
 			<!-- pass pairs of jar locations and section names -->
 			<arg value="${kh_jars.dir}/kernelhaven.jar" />
 			<arg value="Main Infrastructure" />
