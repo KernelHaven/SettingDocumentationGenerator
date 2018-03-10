@@ -2,7 +2,7 @@
 
 <!-- author: Adam -->
 <project name="SettingDocumentationGenerator" default="jenkins" basedir=".">
-	<description>Builds config_template.properties with the SettingDocumentationGenerator</description>
+	<description>Automatically generates documentation for available configuration options</description>
 
 	<!-- Load macro files for locations to download jars from; we don't call any targets from it -->
 	<!-- Load Marcros on Jenkins -->
