@@ -80,10 +80,20 @@ public class SettingDocumentationGenerator {
             + "#\n"
             + "# This was automatically generated on: ";
 
+    /**
+     * A list of section names.
+     */
     private List<String> names;
     
+    /**
+     * A list of settings. First dimension is section (same indices as {@link #names}), second dimension is settings
+     * in this section.
+     */
     private List<List<Setting<?>>> settings;
     
+    /**
+     * Enum values for {@link EnumSetting}s. Key is setting name, value is a list of enum constant names.
+     */
     private Map<String, List<String>> enumValues;
     
     /**
