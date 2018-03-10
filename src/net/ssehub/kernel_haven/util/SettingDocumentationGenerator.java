@@ -3,17 +3,14 @@ package net.ssehub.kernel_haven.util;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import net.ssehub.kernel_haven.config.EnumSetting;
 import net.ssehub.kernel_haven.config.Setting;
@@ -73,7 +70,7 @@ public class SettingDocumentationGenerator {
             "#                            key.2 = c\n" + 
             "#                          Defines the list [\"a\", \"b\", \"c\"].\n" + 
             "#\n" + 
-            "# This was automatically generated on:";
+            "# This was automatically generated on: ";
     
     private List<String> names;
     
@@ -87,61 +84,84 @@ public class SettingDocumentationGenerator {
         this.enumValues = new HashMap<>();
     }
     
-    public void addSettingsFromClassPath(File classPath, String sectionName) throws Exception {
+    public void addSettingsFromJarFile(File jarFile, String sectionName) throws Exception {
         List<Setting<?>> result = new LinkedList<>();
         
-        try (URLClassLoader classLoader = new URLClassLoader(new URL[] { classPath.toURI().toURL() })) {
-            classLoader.setDefaultAssertionStatus(false);
+        try (ZipArchive jar = new ZipArchive(jarFile)) {
             
-            Path path = classPath.toPath();
-            Files.walk(path)
-                    .filter((p) -> Files.isRegularFile(p))
-                    .filter((p) -> p.toString().endsWith(".class"))
-                    .filter((p) -> !p.toString().contains("$"))
-                    .map((p) -> path.relativize(p))
-                    .map((p) -> p.toString().replace(".class", "").replace(File.separatorChar, '.'))
-                    .map((className) -> {
-                        try {
-                            return classLoader.loadClass(className);
-                        } catch (ClassNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .map((clazz) -> clazz.getDeclaredFields())
-                    .flatMap((fields) -> Arrays.stream(fields))
-                    .filter((field) -> Modifier.isFinal(field.getModifiers()) && Modifier.isStatic(field.getModifiers()))
-                    .filter((field) -> Setting.class.isAssignableFrom(field.getType()))
-                    .map((field) -> {
-                        field.setAccessible(true);
-                        try {
-                            return (Setting<?>) field.get(null);
-                        } catch (IllegalArgumentException | IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .peek((setting) -> {
-                        if (setting instanceof EnumSetting<?>) {
-                            @SuppressWarnings("unchecked")
-                            Class<? extends Enum<?>> enumClass = ((EnumSetting<? extends Enum<?>>) setting).getEnumClass();
-                            
-                            List<String> fields = new LinkedList<>();
-                            for (Field field : enumClass.getFields()) {
-                                if (enumClass.isAssignableFrom(field.getType())) {
-                                    fields.add(field.getName());
-                                    
-                                }
-                            }
-                            enumValues.put(setting.getKey(), fields);
-                            
-                        }
-                    })
-                    .forEach((setting) -> result.add(setting));
+            List<String> classes = new LinkedList<>();
             
-         
+            for (File file : jar.listFiles()) {
+                if (file.getName().endsWith(".class") && !file.getName().contains("$")) {
+                    String className = file.getPath().replace(".class", "").replace(File.separatorChar, '.');
+                    if (className.startsWith("net.ssehub")) {
+                        classes.add(className);
+                    }
+                }
+            }
+            
+            loadSettingsFromClasses(classes.stream(), result);
         }
         
         settings.add(result);
         names.add(sectionName);
+    }
+    
+    public void addSettingsFromClassPath(File classPath, String sectionName) throws Exception {
+        List<Setting<?>> result = new LinkedList<>();
+        
+        Path path = classPath.toPath();
+        Stream<String> classNames = Files.walk(path)
+                .filter((p) -> Files.isRegularFile(p))
+                .filter((p) -> p.toString().endsWith(".class"))
+                .filter((p) -> !p.toString().contains("$"))
+                .map((p) -> path.relativize(p))
+                .map((p) -> p.toString().replace(".class", "").replace(File.separatorChar, '.'));
+        
+        loadSettingsFromClasses(classNames, result);
+        
+        settings.add(result);
+        names.add(sectionName);
+    }
+    
+    private void loadSettingsFromClasses(Stream<String> classNames, List<Setting<?>> result) {
+        classNames
+            .map((className) -> {
+                try {
+                    return Class.forName(className);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .map((clazz) -> clazz.getDeclaredFields())
+            .flatMap((fields) -> Arrays.stream(fields))
+            .filter((field) -> Modifier.isFinal(field.getModifiers()) && Modifier.isStatic(field.getModifiers()))
+            .filter((field) -> Setting.class.isAssignableFrom(field.getType()))
+            .map((field) -> {
+                field.setAccessible(true);
+                try {
+                    return (Setting<?>) field.get(null);
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .peek((setting) -> {
+                if (setting instanceof EnumSetting<?>) {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Enum<?>> enumClass = ((EnumSetting<? extends Enum<?>>) setting).getEnumClass();
+                    
+                    List<String> fields = new LinkedList<>();
+                    for (Field field : enumClass.getFields()) {
+                        if (enumClass.isAssignableFrom(field.getType())) {
+                            fields.add(field.getName());
+                            
+                        }
+                    }
+                    enumValues.put(setting.getKey(), fields);
+                    
+                }
+            })
+            .forEach((setting) -> result.add(setting));
     }
     
     private List<String> splitDescription(String description) {
@@ -200,9 +220,7 @@ public class SettingDocumentationGenerator {
     public String generateSettingText() {
         StringBuilder result = new StringBuilder(HEADER);
         
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        result.append(dtf.format(now)).append("\n\n");
+        result.append(Timestamp.INSTANCE.getTimestamp()).append("\n\n");
         
         for (int i = 0; i < names.size(); i++) {
             if (settings.get(i).isEmpty()) {
@@ -216,7 +234,7 @@ public class SettingDocumentationGenerator {
                     result.append("# ").append(line).append("\n");
                 }
                 result.append("#\n");
-                result.append("# Type: ").append(typetToString(setting.getType())).append("\n");
+                result.append("# Type: ").append(typeToString(setting.getType())).append("\n");
                 
                 if (setting.getType() == Type.ENUM) {
                     result.append("# Possible values: ");
@@ -245,10 +263,12 @@ public class SettingDocumentationGenerator {
             
         }
         
+        result.replace(result.length() - 1, result.length(), ""); // remove one trailing \n
+        
         return result.toString();
     }
     
-    private String typetToString(Type type) {
+    private String typeToString(Type type) {
         String str;
         switch (type) {
         case STRING:
@@ -289,30 +309,54 @@ public class SettingDocumentationGenerator {
         }
         return str;
     }
-
-    public static void main(String[] args) throws Exception {
-        SettingDocumentationGenerator generator = new SettingDocumentationGenerator();
-        generator.addSettingsFromClassPath(new File("../KernelHaven/bin"), "Main Infrastructure");
-        
-        // Utilities
-        generator.addSettingsFromClassPath(new File("../CnfUtils/bin"), "CnfUtils");
-        generator.addSettingsFromClassPath(new File("../IOUtils/bin"), "IOUtils");
-        generator.addSettingsFromClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
-        
-        // analyses
-        generator.addSettingsFromClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");
-        generator.addSettingsFromClassPath(new File("../MetricHaven/bin"), "MetricHaven");
-        generator.addSettingsFromClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
-        generator.addSettingsFromClassPath(new File("../ConfigurationMismatchAnalysis/bin"), "ConfigurationMismatchAnalysis");
-        
-        // extractors
-        generator.addSettingsFromClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
-        generator.addSettingsFromClassPath(new File("../KconfigReaderExtractor/bin"), "KconfigReaderExtractor");
-        generator.addSettingsFromClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
-        generator.addSettingsFromClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
-        generator.addSettingsFromClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
-        
-        System.out.println(generator.generateSettingText());
+    
+    public static void main(String[] args) {
+        try {
+            SettingDocumentationGenerator generator = new SettingDocumentationGenerator();
+            
+            if (args.length == 0) {
+                // this branch is taken when locally executing this from Eclipse with no java parameters
+                // visit all Eclipse project in the current work space
+                
+                generator.addSettingsFromClassPath(new File("../KernelHaven/bin"), "Main Infrastructure");
+                
+                // Utilities
+                generator.addSettingsFromClassPath(new File("../CnfUtils/bin"), "CnfUtils");
+                generator.addSettingsFromClassPath(new File("../IOUtils/bin"), "IOUtils");
+                generator.addSettingsFromClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
+                
+                // analyses
+                generator.addSettingsFromClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");
+                generator.addSettingsFromClassPath(new File("../MetricHaven/bin"), "MetricHaven");
+                generator.addSettingsFromClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
+                generator.addSettingsFromClassPath(new File("../ConfigurationMismatchAnalysis/bin"), "ConfigurationMismatchAnalysis");
+                
+                // extractors
+                generator.addSettingsFromClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
+                generator.addSettingsFromClassPath(new File("../KconfigReaderExtractor/bin"), "KconfigReaderExtractor");
+                generator.addSettingsFromClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
+                generator.addSettingsFromClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
+                generator.addSettingsFromClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
+                
+            } else {
+                // this branch is taken when called from Ant
+                // command line arguments are jar locations followed by the section name
+                
+                if (args.length % 2 != 0) {
+                    throw new IllegalArgumentException("Expecting: (<jarfile> <section name>)*");
+                }
+                
+                for (int i = 0; i < args.length; i += 2) {
+                    generator.addSettingsFromJarFile(new File(args[i]), args[i + 1]);
+                }
+            }
+            
+            System.out.print(generator.generateSettingText());
+            
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
 }

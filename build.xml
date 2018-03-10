@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- author: Adam -->
+<project name="SettingDocumentationGenerator" default="jenkins" basedir=".">
+	<description>Builds config_template.properties with the SettingDocumentationGenerator</description>
+
+	<!-- Load macro files for locations to download jars from; we don't call any targets from it -->
+    	<!-- Load Marcros on Jenkins -->
+    	<include file="../../KernelHaven_Infrastructure/workspace/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+    	<!-- Load Marcros in Eclipse -->
+    	<include file="../KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+
+	<!-- define our own directories -->
+    <property name="build.dir" value="${basedir}/build" />
+    <property name="kh_jars.dir" value="${build.dir}/kernel_haven_jars" />
+    <property name="classes.dir" value="${build.dir}/classes" />
+    <property name="gen.dir" value="${build.dir}/generated" />
+	<property name="src.dir" value="${basedir}/src" />
+	
+	<!-- class path for compiling and running; includes compiled classes and all KH jars -->
+	<path id="classpath.project">
+        <pathelement path="${classes.dir}" />
+		<fileset dir="${kh_jars.dir}">
+			<include name="*.jar" />
+		</fileset>
+    </path>
+
+	<!-- called by jenkins; cleans build dir and runs generator -->
+	<target name="jenkins">
+		<antcall target="clean" />
+		<antcall target="runSettingDocumentGenerator" />
+	</target>
+	
+	<!-- cleans the build directory -->
+	<target name="clean">
+        <delete dir="${build.dir}" />
+	</target>
+
+	<!-- generates all necessary folders -->
+	<target name="prepare.folders">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${kh_jars.dir}" />
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${gen.dir}" />
+    </target>
+	
+	<!-- downloads all KernelHaven jars (infrastructure and plugins) from Jenkins -->
+	<target name="downloadjars" depends="prepare.folders">
+		<get src="${infrastructure.location.core_src}" dest="${kh_jars.dir}/kernelhaven.jar" />
+		<get src="${CnfUtils.location}" dest="${kh_jars.dir}/cnfutils.jar" />
+		<get src="${TypeChef.location}" dest="${kh_jars.dir}/typechef.jar" />
+		<get src="${Undertaker.location}" dest="${kh_jars.dir}/undertaker.jar" />
+		<get src="${srcML.location_src}" dest="${kh_jars.dir}/srcml.jar" />
+		<get src="${featureEffectAnalysis.location}" dest="${kh_jars.dir}/featureeffectanalysis.jar" />
+		<get src="${IOUtils.location}" dest="${kh_jars.dir}/ioutils.jar" />
+		<get src="${UnDeadAnalyzer.location_src}" dest="${kh_jars.dir}/undeadanalyzer.jar" />
+		<get src="${MetricHaven.location_src}" dest="${kh_jars.dir}/metrichaven.jar" />
+		<get src="${KconfigReaderExtractor.location_src}" dest="${kh_jars.dir}/kconfigreader.jar" />
+		<get src="${KbuildMinerExtractor.location_src}" dest="${kh_jars.dir}/kbuildminer.jar" />
+		<get src="${NonBooleanUtils.location}" dest="${kh_jars.dir}/nonbooleanutils.jar" />
+		<get src="${ConfigurationMismatchAnalysis.location}" dest="${kh_jars.dir}/configurationmismatchanalyis.jar" />
+	</target>
+	
+	<!-- compiles the SettingDocumentationGenerator -->
+	<target name="compile" depends="downloadjars">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="yes" includeantruntime="false">
+            <classpath refid="classpath.project" />
+        </javac>
+    </target>
+
+	<!-- runs the SettingDocumentationGenerator; output is in build/gen/config_template.properties -->
+	<target name="runSettingDocumentGenerator" depends="compile">
+		<java classname="net.ssehub.kernel_haven.util.SettingDocumentationGenerator" failonerror="true" output="${gen.dir}/config_template.properties" >
+			<!-- pass pairs of jar locations and section names -->
+			<arg value="${kh_jars.dir}/kernelhaven.jar" />
+			<arg value="Main Infrastructure" />
+			<arg value="${kh_jars.dir}/cnfutils.jar" />
+			<arg value="CnfUtils" />
+			<arg value="${kh_jars.dir}/ioutils.jar" />
+			<arg value="IOUtils" />
+			<arg value="${kh_jars.dir}/nonbooleanutils.jar" />
+			<arg value="NonBooleanUtils" />
+			<arg value="${kh_jars.dir}/featureeffectanalysis.jar" />
+			<arg value="FeatureEffectAnalysis" />
+			<arg value="${kh_jars.dir}/metrichaven.jar" />
+			<arg value="MetricHaven" />
+			<arg value="${kh_jars.dir}/undeadanalyzer.jar" />
+			<arg value="UnDeadAnalyzer" />
+			<arg value="${kh_jars.dir}/configurationmismatchanalyis.jar" />
+			<arg value="ConfigurationMismatchAnalysis" />
+			<arg value="${kh_jars.dir}/kbuildminer.jar" />
+			<arg value="KbuildMinerExtractor" />
+			<arg value="${kh_jars.dir}/kconfigreader.jar" />
+			<arg value="KconfigReaderExtractor" />
+			<arg value="${kh_jars.dir}/srcml.jar" />
+			<arg value="SrcMlExtractor" />
+			<arg value="${kh_jars.dir}/typechef.jar" />
+			<arg value="TypeChefExtractor" />
+			<arg value="${kh_jars.dir}/undertaker.jar" />
+			<arg value="UndertakerExtractor" />
+
+			<classpath refid="classpath.project" />
+		</java>
+	</target>
+
+</project>

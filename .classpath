@@ -14,5 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/TypeChefExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/UnDeadAnalyzer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/UndertakerExtractor"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ConfigurationMismatchAnalysis"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
