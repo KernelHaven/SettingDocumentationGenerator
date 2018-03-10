@@ -1,6 +1,7 @@
 package net.ssehub.kernel_haven.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -15,76 +16,95 @@ import java.util.stream.Stream;
 import net.ssehub.kernel_haven.config.EnumSetting;
 import net.ssehub.kernel_haven.config.Setting;
 import net.ssehub.kernel_haven.config.Setting.Type;
+import net.ssehub.kernel_haven.fe_analysis.Settings;
 
+/**
+ * A class for automatically generating config_template.properties. This class uses reflection to search for all
+ * <code>static final Setting</code> fields and uses them to generate the documentation automagically.
+ *
+ * @author Adam
+ */
 public class SettingDocumentationGenerator {
     
-    private static final String HEADER = "# Configuration file documentation for KernelHaven\n" + 
-            "#\n" + 
-            "# This file lists all known configuration options that are available for\n" + 
-            "# KernelHaven. Note that some plugins may define their own settings, that are\n" + 
-            "# not listed in this file. However, this file should cover the most common\n" + 
-            "# plugins.\n" + 
-            "#\n" + 
-            "# This configuration file is a standard Java Properties file (see the\n" + 
-            "# documentation of java.util.Properties). A properties file is a key-value\n" + 
-            "# storage in the format: key = value. Lines starting with a hash (#) are\n" + 
-            "# comments and not considered in parsing. Multiple lines can be joined together\n" + 
-            "# with a backslash (\\) character directly in front of the line break. This is\n" + 
-            "# useful for multi-line values or formatting.\n" + 
-            "#\n" + 
-            "# This file lists the keys for the settings defined in the main infrastructure,\n" + 
-            "# followed by the settings of common plugins. Each setting has a short\n" + 
-            "# description, that contains:\n" + 
-            "#  * An explanation text for the setting.\n" + 
-            "#  * The type of setting (see below for a list possible types).\n" + 
-            "#  * For enums: The possible values.\n" + 
-            "#  * The default value for the setting, if it specifies one.\n" + 
-            "#  * If no default value is specified: Whether the setting is mandatory or not.\n" + 
-            "#\n" + 
-            "# Possible setting types are:\n" + 
-            "#  * String: A simple text value.\n" + 
-            "#  * Integer: An integer value. An exception is generated if this is not a valid\n" + 
-            "#             integer.\n" + 
-            "#  * Boolean: A boolean value. Everything except \"true\" (case insensitive) is\n" + 
-            "#             considered to be the value false.\n" + 
-            "#  * Regular Expression: A Java regular expression. See the documentation for\n" + 
-            "#                        java.util.regex.Pattern class.\n" + 
-            "#  * Path: A path value. The file denoted by this does not have to exist.\n" + 
-            "#  * Existing File: A path value for an existing file. If the specified file\n" + 
-            "#                   does not exist, then an exception is thrown. This can either\n" + 
-            "#                   be absolute, relative to the current working directory or\n" + 
-            "#                   relative to the source_tree setting (first file found in\n" + 
-            "#                   this order is used).\n" + 
-            "#  * Existing Directory: A path value for an existing directory. If the\n" + 
-            "#                        specified directory does not exist, then an exception\n" + 
-            "#                        is thrown. This can either be relative to the current\n" + 
-            "#                        working directory or an absolute path.\n" + 
-            "#  * Enum: One value of an enumartion of possible values. Not case sensitive.\n" + 
-            "#  * Comma separated list of strings: A comma separated list of string values.\n" + 
-            "#  * List of setting keys: A list of string values created from multiple setting\n" + 
-            "#                          keys. The base key is appended by a .0 for the first\n" + 
-            "#                          value. The following values increase this integer.\n" + 
-            "#                          For example:\n" + 
-            "#                            key.0 = a\n" + 
-            "#                            key.1 = b\n" + 
-            "#                            key.2 = c\n" + 
-            "#                          Defines the list [\"a\", \"b\", \"c\"].\n" + 
-            "#\n" + 
-            "# This was automatically generated on: ";
-    
+    private static final String HEADER = "# Configuration file documentation for KernelHaven\n"
+            + "#\n"
+            + "# This file lists all known configuration options that are available for\n"
+            + "# KernelHaven. Note that some plugins may define their own settings, that are\n"
+            + "# not listed in this file. However, this file should cover the most common\n"
+            + "# plugins.\n"
+            + "#\n"
+            + "# This configuration file is a standard Java Properties file (see the\n"
+            + "# documentation of java.util.Properties). A properties file is a key-value\n"
+            + "# storage in the format: key = value. Lines starting with a hash (#) are\n"
+            + "# comments and not considered in parsing. Multiple lines can be joined together\n"
+            + "# with a backslash (\\) character directly in front of the line break. This is\n"
+            + "# useful for multi-line values or formatting.\n"
+            + "#\n"
+            + "# This file lists the keys for the settings defined in the main infrastructure,\n"
+            + "# followed by the settings of common plugins. Each setting has a short\n"
+            + "# description, that contains:\n"
+            + "#  * An explanation text for the setting.\n"
+            + "#  * The type of setting (see below for a list possible types).\n"
+            + "#  * For enums: The possible values.\n"
+            + "#  * The default value for the setting, if it specifies one.\n"
+            + "#  * If no default value is specified: Whether the setting is mandatory or not.\n"
+            + "#\n"
+            + "# Possible setting types are:\n"
+            + "#  * String: A simple text value.\n"
+            + "#  * Integer: An integer value. An exception is generated if this is not a valid\n"
+            + "#             integer.\n"
+            + "#  * Boolean: A boolean value. Everything except \"true\" (case insensitive) is\n"
+            + "#             considered to be the value false.\n"
+            + "#  * Regular Expression: A Java regular expression. See the documentation for\n"
+            + "#                        java.util.regex.Pattern class.\n"
+            + "#  * Path: A path value. The file denoted by this does not have to exist.\n"
+            + "#  * Existing File: A path value for an existing file. If the specified file\n"
+            + "#                   does not exist, then an exception is thrown. This can either\n"
+            + "#                   be absolute, relative to the current working directory or\n"
+            + "#                   relative to the source_tree setting (first file found in\n"
+            + "#                   this order is used).\n"
+            + "#  * Existing Directory: A path value for an existing directory. If the\n"
+            + "#                        specified directory does not exist, then an exception\n"
+            + "#                        is thrown. This can either be relative to the current\n"
+            + "#                        working directory or an absolute path.\n"
+            + "#  * Enum: One value of an enumartion of possible values. Not case sensitive.\n"
+            + "#  * Comma separated list of strings: A comma separated list of string values.\n"
+            + "#  * List of setting keys: A list of string values created from multiple setting\n"
+            + "#                          keys. The base key is appended by a .0 for the first\n"
+            + "#                          value. The following values increase this integer.\n"
+            + "#                          For example:\n"
+            + "#                            key.0 = a\n"
+            + "#                            key.1 = b\n"
+            + "#                            key.2 = c\n"
+            + "#                          Defines the list [\"a\", \"b\", \"c\"].\n"
+            + "#\n"
+            + "# This was automatically generated on: ";
+
     private List<String> names;
     
     private List<List<Setting<?>>> settings;
     
     private Map<String, List<String>> enumValues;
     
+    /**
+     * Creates a {@link SettingDocumentationGenerator}.
+     */
     public SettingDocumentationGenerator() {
         this.names = new LinkedList<>();
         this.settings = new LinkedList<>();
         this.enumValues = new HashMap<>();
     }
     
-    public void addSettingsFromJarFile(File jarFile, String sectionName) throws Exception {
+    /**
+     * Searches for {@link Setting} constants in a jar file. This walks through all .class files in the jar, loads the
+     * class and searches for {@link Setting} constants via reflection. The jar must be in the class-path of this JVM.
+     * 
+     * @param jarFile The jar file to search in.
+     * @param sectionName The name of the section that the {@link Setting}s found in the file should appear under.
+     * 
+     * @throws IOException If reading the jar file fails.
+     */
+    public void findSettingsInJarFile(File jarFile, String sectionName) throws IOException {
         List<Setting<?>> result = new LinkedList<>();
         
         try (ZipArchive jar = new ZipArchive(jarFile)) {
@@ -107,16 +127,26 @@ public class SettingDocumentationGenerator {
         names.add(sectionName);
     }
     
-    public void addSettingsFromClassPath(File classPath, String sectionName) throws Exception {
+    /**
+     * Searches for {@link Setting} constants in a directory. This walks through all .class files in the directory,
+     * loads the class and searches for {@link Setting} constants via reflection. The directory must be in the
+     * class-path of this JVM.
+     * 
+     * @param classPathDir The directory to search in.
+     * @param sectionName The name of the section that the {@link Setting}s found in this directory should appear under.
+     * 
+     * @throws IOException If searching for .class files fails.
+     */
+    public void findSettingsInClassPath(File classPathDir, String sectionName) throws IOException {
         List<Setting<?>> result = new LinkedList<>();
         
-        Path path = classPath.toPath();
-        Stream<String> classNames = Files.walk(path)
-                .filter((p) -> Files.isRegularFile(p))
-                .filter((p) -> p.toString().endsWith(".class"))
-                .filter((p) -> !p.toString().contains("$"))
-                .map((p) -> path.relativize(p))
-                .map((p) -> p.toString().replace(".class", "").replace(File.separatorChar, '.'));
+        Path classPath = classPathDir.toPath();
+        Stream<String> classNames = Files.walk(classPath)
+                .filter((path) -> Files.isRegularFile(path))
+                .filter((path) -> path.toString().endsWith(".class"))
+                .filter((path) -> !path.toString().contains("$"))
+                .map((path) -> classPath.relativize(path))
+                .map((path) -> path.toString().replace(".class", "").replace(File.separatorChar, '.'));
         
         loadSettingsFromClasses(classNames, result);
         
@@ -124,6 +154,13 @@ public class SettingDocumentationGenerator {
         names.add(sectionName);
     }
     
+    /**
+     * Walks through the given stream of class names and searches for <code>static final Setting</code> fields. Adds
+     * all of these into the result list. All of the classes must be load-able by {@link Class#forName(String)}.
+     *  
+     * @param classNames The stream containing the fully qualified class names to search in.
+     * @param result The list where to add the results.
+     */
     private void loadSettingsFromClasses(Stream<String> classNames, List<Setting<?>> result) {
         classNames
             .map((className) -> {
@@ -164,6 +201,13 @@ public class SettingDocumentationGenerator {
             .forEach((setting) -> result.add(setting));
     }
     
+    /**
+     * Splits a line up so that each line is at most 78 characters long. Tries to split at spaces. Single words longer
+     * than 78 characters are not split up.
+     * 
+     * @param description The text to split up.
+     * @return The list of resulting lines.
+     */
     private List<String> splitDescription(String description) {
         List<String> lines = new LinkedList<>();
         
@@ -206,17 +250,35 @@ public class SettingDocumentationGenerator {
         return lines;
     }
     
-    private void generateHeader(StringBuilder b, String text) {
+    /**
+     * Generates a "section header" string for a section name and appends it to the given buffer. The header will have
+     * the format:
+     * <code><pre>
+     * #############
+     * # Some Text #
+     * #############
+     * </pre></code>
+     *  
+     * @param buffer The buffer to add the "header" string to.
+     * @param text The text that should appear in the section header.
+     */
+    private void generateHeader(StringBuilder buffer, String text) {
         for (int i = 0; i < text.length() + 4; i++) {
-            b.append('#');
+            buffer.append('#');
         }
-        b.append("\n# ").append(text).append(" #\n");
+        buffer.append("\n# ").append(text).append(" #\n");
         for (int i = 0; i < text.length() + 4; i++) {
-            b.append('#');
+            buffer.append('#');
         }
-        b.append("\n\n");
+        buffer.append("\n\n");
     }
     
+    /**
+     * Generates the documentation text for all settings that were previously added via the
+     * <code>addSettingsFrom*()</code> methods. This text can be used as the content for config_template.properties.
+     * 
+     * @return The documentation text for all settings.
+     */
     public String generateSettingText() {
         StringBuilder result = new StringBuilder(HEADER);
         
@@ -247,8 +309,8 @@ public class SettingDocumentationGenerator {
                 
                 if (setting.getDefaultValue() != null) {
                     result.append("# Default value: ")
-                    .append(setting.getDefaultValue().isEmpty() ? "(empty string)" : setting.getDefaultValue())
-                    .append("\n");
+                        .append(setting.getDefaultValue().isEmpty() ? "(empty string)" : setting.getDefaultValue())
+                        .append("\n");
                 } else {
                     result.append("# Mandatory: ").append(setting.isMandatory() ? "Yes" : "No").append("\n");
                 }
@@ -268,6 +330,12 @@ public class SettingDocumentationGenerator {
         return result.toString();
     }
     
+    /**
+     * Converts a setting type into a human-readable string.
+     * 
+     * @param type The type to get the string for.
+     * @return The human readable text.
+     */
     private String typeToString(Type type) {
         String str;
         switch (type) {
@@ -310,53 +378,79 @@ public class SettingDocumentationGenerator {
         return str;
     }
     
-    public static void main(String[] args) {
-        try {
-            SettingDocumentationGenerator generator = new SettingDocumentationGenerator();
+    /**
+     * <p>
+     * The main method that executes the {@link SettingDocumentationGenerator}. This can be executed locally from
+     * within eclipse, or from a shell with command line arguments (e.g. from an ant script).
+     * </p>
+     * <p>
+     * If this is called from eclipse, no command line arguments are needed. It automatically searches in the public
+     * KernelHaven eclipse projects. All of these projects must be in the workspace. All of these projects must be
+     * added to the class-path of this project.
+     * </p>
+     * <p>
+     * If this is called from somewhere else (e.g. ant or a shell), pass locations of jar archives as the command line
+     * arguments. Each jar file location must be followed by a string containing the section header for the settings
+     * found in that jar. Each of these jars must be in the class-path of this JVM.
+     * <br />Example:<br />
+     * <code>java -cp .:plugin1.jar:plugin2.jar net.ssehub.kernel_haven.util.SettingDocumentationGenerator
+     * plugin1.jar "Plugin 1" plugin2.jar "Plugin 2"</code>
+     * </p>
+     * <p>
+     * The created documentation text is printed to {@link System#out}. You may want to save that in a file.
+     * </p>
+     * 
+     * @param args Command line arguments. See above.
+     * 
+     * @throws IOException If finding {@link Settings}s fails.
+     */
+    public static void main(String[] args) throws IOException {
+        Thread.setDefaultUncaughtExceptionHandler((thread, exc) -> {
+            exc.printStackTrace();
+            System.exit(1);
+        });
+        
+        SettingDocumentationGenerator generator = new SettingDocumentationGenerator();
+        
+        if (args.length == 0) {
+            // this branch is taken when locally executing this from Eclipse with no java parameters
+            // visit all Eclipse project in the current work space
             
-            if (args.length == 0) {
-                // this branch is taken when locally executing this from Eclipse with no java parameters
-                // visit all Eclipse project in the current work space
-                
-                generator.addSettingsFromClassPath(new File("../KernelHaven/bin"), "Main Infrastructure");
-                
-                // Utilities
-                generator.addSettingsFromClassPath(new File("../CnfUtils/bin"), "CnfUtils");
-                generator.addSettingsFromClassPath(new File("../IOUtils/bin"), "IOUtils");
-                generator.addSettingsFromClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
-                
-                // analyses
-                generator.addSettingsFromClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");
-                generator.addSettingsFromClassPath(new File("../MetricHaven/bin"), "MetricHaven");
-                generator.addSettingsFromClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
-                generator.addSettingsFromClassPath(new File("../ConfigurationMismatchAnalysis/bin"), "ConfigurationMismatchAnalysis");
-                
-                // extractors
-                generator.addSettingsFromClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
-                generator.addSettingsFromClassPath(new File("../KconfigReaderExtractor/bin"), "KconfigReaderExtractor");
-                generator.addSettingsFromClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
-                generator.addSettingsFromClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
-                generator.addSettingsFromClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
-                
-            } else {
-                // this branch is taken when called from Ant
-                // command line arguments are jar locations followed by the section name
-                
-                if (args.length % 2 != 0) {
-                    throw new IllegalArgumentException("Expecting: (<jarfile> <section name>)*");
-                }
-                
-                for (int i = 0; i < args.length; i += 2) {
-                    generator.addSettingsFromJarFile(new File(args[i]), args[i + 1]);
-                }
+            generator.findSettingsInClassPath(new File("../KernelHaven/bin"), "Main Infrastructure");
+            
+            // Utilities
+            generator.findSettingsInClassPath(new File("../CnfUtils/bin"), "CnfUtils");
+            generator.findSettingsInClassPath(new File("../IOUtils/bin"), "IOUtils");
+            generator.findSettingsInClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
+            
+            // analyses
+            generator.findSettingsInClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");
+            generator.findSettingsInClassPath(new File("../MetricHaven/bin"), "MetricHaven");
+            generator.findSettingsInClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
+            generator.findSettingsInClassPath(new File("../ConfigurationMismatchAnalysis/bin"),
+                    "ConfigurationMismatchAnalysis");
+            
+            // extractors
+            generator.findSettingsInClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
+            generator.findSettingsInClassPath(new File("../KconfigReaderExtractor/bin"), "KconfigReaderExtractor");
+            generator.findSettingsInClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
+            generator.findSettingsInClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
+            generator.findSettingsInClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
+            
+        } else {
+            // this branch is taken when called from Ant
+            // command line arguments are jar locations followed by the section name
+            
+            if (args.length % 2 != 0) {
+                throw new IllegalArgumentException("Expecting: (<jarfile> <section name>)*");
             }
             
-            System.out.print(generator.generateSettingText());
-            
-        } catch (Throwable e) {
-            e.printStackTrace();
-            System.exit(1);
+            for (int i = 0; i < args.length; i += 2) {
+                generator.findSettingsInJarFile(new File(args[i]), args[i + 1]);
+            }
         }
+        
+        System.out.print(generator.generateSettingText());
     }
 
 }
