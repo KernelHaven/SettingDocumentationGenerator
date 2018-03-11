@@ -7,3 +7,7 @@ Tool to automatically generate documentation for configuration options of [Kerne
 ## Usage
 
 See JavaDoc comment for main method in [`SettingDocumentationGenerator.java`](https://github.com/KernelHaven/SettingDocumentationGenerator/blob/master/src/net/ssehub/kernel_haven/util/SettingDocumentationGenerator.java).
+
+## License
+
+This tool is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.html).
