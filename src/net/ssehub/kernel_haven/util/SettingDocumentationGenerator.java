@@ -446,6 +446,7 @@ public class SettingDocumentationGenerator {
             generator.findSettingsInClassPath(new File("../srcMLExtractor/bin"), "SrcMlExtractor");
             generator.findSettingsInClassPath(new File("../TypeChefExtractor/bin"), "TypeChefExtractor");
             generator.findSettingsInClassPath(new File("../UndertakerExtractor/bin"), "UndertakerExtractor");
+            generator.findSettingsInClassPath(new File("../CodeBlockExtractor/bin"), "CodeBlockExtractor");
             
         } else {
             // this branch is taken when called from Ant

@@ -59,6 +59,7 @@
 		<get src="${KbuildMinerExtractor.location_src}" dest="${kh_jars.dir}/kbuildminer.jar" />
 		<get src="${NonBooleanUtils.location}" dest="${kh_jars.dir}/nonbooleanutils.jar" />
 		<get src="${ConfigurationMismatchAnalysis.location}" dest="${kh_jars.dir}/configurationmismatchanalyis.jar" />
+		<get src="${CodeBlockExtractor.location}" dest="${kh_jars.dir}/codeblockextractor.jar" />
 	</target>
 
 	<!-- compiles the SettingDocumentationGenerator -->
@@ -98,6 +99,8 @@
 			<arg value="TypeChefExtractor" />
 			<arg value="${kh_jars.dir}/undertaker.jar" />
 			<arg value="UndertakerExtractor" />
+			<arg value="${kh_jars.dir}/codeblockextractor.jar" />
+			<arg value="CodeBlockExtractor" />
 
 			<classpath refid="classpath.project" />
 		</java>
