@@ -157,7 +157,11 @@ public class SettingDocumentationGenerator {
                 .filter((path) -> !path.toString().contains("$"))
                 .map((path) -> classPath.relativize(path))
                 .map((path) -> path.toString().replace(".class", "").replace(File.separatorChar, '.'))
-                .sorted();
+                .sorted()
+                .map((path) -> {
+                    System.out.println(path);
+                    return path;
+                });
         
         loadSettingsFromClasses(classNames, result);
         
