@@ -130,7 +130,7 @@ public class SettingDocumentationGenerator {
                 }
             }
             
-            loadSettingsFromClasses(classes.stream(), result);
+            loadSettingsFromClasses(classes.stream().sorted(), result);
         }
         
         settings.add(result);
@@ -157,11 +157,7 @@ public class SettingDocumentationGenerator {
                 .filter((path) -> !path.toString().contains("$"))
                 .map((path) -> classPath.relativize(path))
                 .map((path) -> path.toString().replace(".class", "").replace(File.separatorChar, '.'))
-                .sorted()
-                .map((path) -> {
-                    System.out.println(path);
-                    return path;
-                });
+                .sorted();
         
         loadSettingsFromClasses(classNames, result);
         
