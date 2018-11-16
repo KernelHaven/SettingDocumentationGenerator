@@ -60,6 +60,8 @@
 		<get src="${NonBooleanUtils.location}" dest="${kh_jars.dir}/nonbooleanutils.jar" />
 		<get src="${ConfigurationMismatchAnalysis.location}" dest="${kh_jars.dir}/configurationmismatchanalyis.jar" />
 		<get src="${CodeBlockExtractor.location}" dest="${kh_jars.dir}/codeblockextractor.jar" />
+		<get src="${DBUtils.location}" dest="${kh_jars.dir}/dbutils.jar" />
+		<get src="${BusybootPreparation.location}" dest="${kh_jars.dir}/busybootpreparation.jar" />
 	</target>
 
 	<!-- compiles the SettingDocumentationGenerator -->
@@ -83,6 +85,10 @@
 			<arg value="NonBooleanUtils" />
 			<arg value="${kh_jars.dir}/featureeffectanalysis.jar" />
 			<arg value="FeatureEffectAnalysis" />
+			<arg value="${kh_jars.dir}/dbutils.jar" />
+			<arg value="DBUtils" />
+			<arg value="${kh_jars.dir}/busybootpreparation.jar" />
+			<arg value="BusybootPreparation" />
 			<arg value="${kh_jars.dir}/metrichaven.jar" />
 			<arg value="MetricHaven" />
 			<arg value="${kh_jars.dir}/undeadanalyzer.jar" />

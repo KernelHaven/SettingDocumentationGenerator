@@ -433,6 +433,8 @@ public class SettingDocumentationGenerator {
             generator.findSettingsInClassPath(new File("../CnfUtils/bin"), "CnfUtils");
             generator.findSettingsInClassPath(new File("../IOUtils/bin"), "IOUtils");
             generator.findSettingsInClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
+            generator.findSettingsInClassPath(new File("../DBUtils/bin"), "DBUtils");
+            generator.findSettingsInClassPath(new File("../BusybootPreparation/bin"), "BusybootPreparation");
             
             // analyses
             generator.findSettingsInClassPath(new File("../FeatureEffectAnalysis/bin"), "FeatureEffectAnalysis");

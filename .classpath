@@ -16,5 +16,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/UndertakerExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ConfigurationMismatchAnalysis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CodeBlockExtractor"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BusybootPreparation"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DBUtils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
