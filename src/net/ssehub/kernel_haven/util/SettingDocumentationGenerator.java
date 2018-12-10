@@ -38,7 +38,12 @@ public class SettingDocumentationGenerator {
             + "# storage in the format: key = value. Lines starting with a hash (#) are\n"
             + "# comments and not considered in parsing. Multiple lines can be joined together\n"
             + "# with a backslash (\\) character directly in front of the line break. This is\n"
-            + "# useful for multi-line values or formatting.\n"
+            + "# useful for multi-line values or formatting. Backslash characters (\\) in normal\n"
+            + "# text content are used for escaping; thus a double backslash (\\\\) is required\n"
+            + "# to write a single backslash as a property value (this should be kept in mind\n"
+            + "# when writing regular expressions as property values). The default values for\n"
+            + "# settings are already escaped and have two backslash characters (\\\\) instead of\n"
+            + "# a single one.\n"
             + "#\n"
             + "# This file lists the keys for the settings defined in the main infrastructure,\n"
             + "# followed by the settings of common plugins. Each setting has a short\n"
@@ -285,6 +290,17 @@ public class SettingDocumentationGenerator {
     }
     
     /**
+     * Escapes \ characters to \\.
+     * 
+     * @param value The setting value to escape in.
+     * 
+     * @return The escaped setting value.
+     */
+    private String escapeSettingValue(String value) {
+        return value.replace("\\", "\\\\");
+    }
+    
+    /**
      * Generates the documentation text for all settings that were previously added via the
      * <code>addSettingsFrom*()</code> methods. This text can be used as the content for config_template.properties.
      * 
@@ -320,7 +336,8 @@ public class SettingDocumentationGenerator {
                 
                 if (setting.getDefaultValue() != null) {
                     result.append("# Default value: ")
-                        .append(setting.getDefaultValue().isEmpty() ? "(empty string)" : setting.getDefaultValue())
+                        .append(setting.getDefaultValue().isEmpty()
+                                ? "(empty string)" : escapeSettingValue(setting.getDefaultValue()))
                         .append("\n");
                 } else {
                     result.append("# Mandatory: ").append(setting.isMandatory() ? "Yes" : "No").append("\n");
