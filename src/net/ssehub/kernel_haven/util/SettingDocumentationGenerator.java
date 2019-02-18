@@ -301,6 +301,36 @@ public class SettingDocumentationGenerator {
     }
     
     /**
+     * Returns the list of section names.
+     * 
+     * @return The section names.
+     */
+    public List<String> getSectionNames() {
+        return names;
+    }
+    
+    /**
+     * Returns all settings found. The first dimension are the sections, in the same order as they were added via
+     * the find*() methods.
+     * 
+     * @return The list of all settings.
+     * 
+     * @see #getSectionNames()
+     */
+    public List<List<Setting<?>>> getSettings() {
+        return settings;
+    }
+    
+    /**
+     * Returns a map containing all enum values for {@link EnumSetting}. The keys are the setting keys.
+     * 
+     * @return A map of enum values.
+     */
+    public Map<String, List<String>> getEnumValues() {
+        return enumValues;
+    }
+    
+    /**
      * Generates the documentation text for all settings that were previously added via the
      * <code>addSettingsFrom*()</code> methods. This text can be used as the content for config_template.properties.
      * 
