@@ -6,7 +6,7 @@
 
 	<!-- Load macro files for locations to download jars from; we don't call any targets from it -->
 	<!-- Load Marcros on Jenkins -->
-	<include file="../../KernelHaven_Infrastructure/workspace/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+	<include file="../KH_KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
 	<!-- Load Marcros in Eclipse -->
 	<include file="../KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
 

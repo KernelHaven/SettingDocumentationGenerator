@@ -1,6 +1,6 @@
 # SettingDocumentationGenerator
 
-<!-- ![Build Status](https://jenkins.sse.uni-hildesheim.de/buildStatus/icon?job=TODO) -->
+![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=KH_SettingDocumentationGenerator)
 
 Tool to automatically generate documentation for configuration options of [KernelHaven](https://github.com/KernelHaven/KernelHaven).
 
