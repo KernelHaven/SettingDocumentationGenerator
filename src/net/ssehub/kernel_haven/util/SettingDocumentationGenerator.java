@@ -452,26 +452,21 @@ public class SettingDocumentationGenerator {
     }
     
     /**
-     * <p>
      * The main method that executes the {@link SettingDocumentationGenerator}. This can be executed locally from
      * within eclipse, or from a shell with command line arguments (e.g. from an ant script).
-     * </p>
      * <p>
      * If this is called from eclipse, no command line arguments are needed. It automatically searches in the public
      * KernelHaven eclipse projects. All of these projects must be in the workspace. All of these projects must be
      * added to the class-path of this project.
-     * </p>
      * <p>
      * If this is called from somewhere else (e.g. ant or a shell), pass locations of jar archives as the command line
      * arguments. Each jar file location must be followed by a string containing the section header for the settings
      * found in that jar. Each of these jars must be in the class-path of this JVM.
-     * <br />Example:<br />
+     * <h2>Example</h2>
      * <code>java -cp .:plugin1.jar:plugin2.jar net.ssehub.kernel_haven.util.SettingDocumentationGenerator
      * plugin1.jar "Plugin 1" plugin2.jar "Plugin 2"</code>
-     * </p>
      * <p>
      * The created documentation text is printed to {@link System#out}. You may want to save that in a file.
-     * </p>
      * 
      * @param args Command line arguments. See above.
      * 
