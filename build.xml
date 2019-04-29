@@ -6,9 +6,9 @@
 
 	<!-- Load macro files for locations to download jars from; we don't call any targets from it -->
 	<!-- Load Marcros on Jenkins -->
-	<include file="../KH_KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+	<include file="../KH_KernelHaven/ant/common.xml" optional="true" />
 	<!-- Load Marcros in Eclipse -->
-	<include file="../KernelHaven/KernelHavenMacros.xml" as="KH_Common" optional="true" />
+	<include file="../KernelHaven/ant/common.xml" optional="true" />
 
 	<!-- define our own directories -->
 	<property name="build.dir" value="${basedir}/build" />
@@ -46,22 +46,22 @@
 
 	<!-- downloads all KernelHaven jars (infrastructure and plugins) from Jenkins -->
 	<target name="downloadjars" depends="prepare.folders">
-		<get src="${infrastructure.location.core_src}" dest="${kh_jars.dir}/kernelhaven.jar" />
-		<get src="${CnfUtils.location}" dest="${kh_jars.dir}/cnfutils.jar" />
-		<get src="${TypeChef.location}" dest="${kh_jars.dir}/typechef.jar" />
-		<get src="${Undertaker.location}" dest="${kh_jars.dir}/undertaker.jar" />
-		<get src="${srcML.location_src}" dest="${kh_jars.dir}/srcml.jar" />
-		<get src="${featureEffectAnalysis.location}" dest="${kh_jars.dir}/featureeffectanalysis.jar" />
-		<get src="${IOUtils.location}" dest="${kh_jars.dir}/ioutils.jar" />
-		<get src="${UnDeadAnalyzer.location_src}" dest="${kh_jars.dir}/undeadanalyzer.jar" />
-		<get src="${MetricHaven.location_src}" dest="${kh_jars.dir}/metrichaven.jar" />
-		<get src="${KconfigReaderExtractor.location_src}" dest="${kh_jars.dir}/kconfigreader.jar" />
-		<get src="${KbuildMinerExtractor.location_src}" dest="${kh_jars.dir}/kbuildminer.jar" />
-		<get src="${NonBooleanUtils.location}" dest="${kh_jars.dir}/nonbooleanutils.jar" />
-		<get src="${ConfigurationMismatchAnalysis.location}" dest="${kh_jars.dir}/configurationmismatchanalyis.jar" />
-		<get src="${CodeBlockExtractor.location}" dest="${kh_jars.dir}/codeblockextractor.jar" />
-		<get src="${DBUtils.location}" dest="${kh_jars.dir}/dbutils.jar" />
-		<get src="${BusybootPreparation.location}" dest="${kh_jars.dir}/busybootpreparation.jar" />
+		<get src="${infrastructure.main.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.CnfUtils.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.TypeChefExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.UndertakerExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.srcMLExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.FeatureEffectAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.IOUtils.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.UnDeadAnalyzer.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.MetricHaven.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.KconfigReaderExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.KbuildMinerExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.NonBooleanUtils.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.ConfigurationMismatchAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.CodeBlockExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.DBUtils.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.BusybootPreparation.url}" dest="${kh_jars.dir}/" />
 	</target>
 
 	<!-- compiles the SettingDocumentationGenerator -->
@@ -75,37 +75,37 @@
 	<target name="runSettingDocumentGenerator" depends="compile">
 		<java classname="net.ssehub.kernel_haven.util.SettingDocumentationGenerator" failonerror="true" output="${gen.dir}/config_template.properties">
 			<!-- pass pairs of jar locations and section names -->
-			<arg value="${kh_jars.dir}/kernelhaven.jar" />
+			<arg value="${kh_jars.dir}/KernelHaven.jar" />
 			<arg value="Main Infrastructure" />
-			<arg value="${kh_jars.dir}/cnfutils.jar" />
+			<arg value="${kh_jars.dir}/CnfUtils.jar" />
 			<arg value="CnfUtils" />
-			<arg value="${kh_jars.dir}/ioutils.jar" />
+			<arg value="${kh_jars.dir}/IOUtils.jar" />
 			<arg value="IOUtils" />
-			<arg value="${kh_jars.dir}/nonbooleanutils.jar" />
+			<arg value="${kh_jars.dir}/NonBooleanUtils.jar" />
 			<arg value="NonBooleanUtils" />
-			<arg value="${kh_jars.dir}/featureeffectanalysis.jar" />
+			<arg value="${kh_jars.dir}/FeatureEffectAnalysis.jar" />
 			<arg value="FeatureEffectAnalysis" />
-			<arg value="${kh_jars.dir}/dbutils.jar" />
+			<arg value="${kh_jars.dir}/DBUtils.jar" />
 			<arg value="DBUtils" />
-			<arg value="${kh_jars.dir}/busybootpreparation.jar" />
+			<arg value="${kh_jars.dir}/BusybootPreparation.jar" />
 			<arg value="BusybootPreparation" />
-			<arg value="${kh_jars.dir}/metrichaven.jar" />
+			<arg value="${kh_jars.dir}/MetricHaven.jar" />
 			<arg value="MetricHaven" />
-			<arg value="${kh_jars.dir}/undeadanalyzer.jar" />
+			<arg value="${kh_jars.dir}/UnDeadAnalyzer.jar" />
 			<arg value="UnDeadAnalyzer" />
-			<arg value="${kh_jars.dir}/configurationmismatchanalyis.jar" />
+			<arg value="${kh_jars.dir}/ConfigurationMismatchAnalyis.jar" />
 			<arg value="ConfigurationMismatchAnalysis" />
-			<arg value="${kh_jars.dir}/kbuildminer.jar" />
+			<arg value="${kh_jars.dir}/KbuildMinerExtractor.jar" />
 			<arg value="KbuildMinerExtractor" />
-			<arg value="${kh_jars.dir}/kconfigreader.jar" />
+			<arg value="${kh_jars.dir}/KconfigReaderExtractor.jar" />
 			<arg value="KconfigReaderExtractor" />
-			<arg value="${kh_jars.dir}/srcml.jar" />
+			<arg value="${kh_jars.dir}/srcMLExtractor.jar" />
 			<arg value="SrcMlExtractor" />
-			<arg value="${kh_jars.dir}/typechef.jar" />
+			<arg value="${kh_jars.dir}/TypechefExtractor.jar" />
 			<arg value="TypeChefExtractor" />
-			<arg value="${kh_jars.dir}/undertaker.jar" />
+			<arg value="${kh_jars.dir}/UndertakerExtractor.jar" />
 			<arg value="UndertakerExtractor" />
-			<arg value="${kh_jars.dir}/codeblockextractor.jar" />
+			<arg value="${kh_jars.dir}/CodeblockExtractor.jar" />
 			<arg value="CodeBlockExtractor" />
 
 			<classpath refid="classpath.project" />
