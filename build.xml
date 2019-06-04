@@ -52,6 +52,7 @@
 		<get src="${plugins.UndertakerExtractor.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.srcMLExtractor.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.FeatureEffectAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.EntityLocatorAnalysis.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.IOUtils.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.UnDeadAnalyzer.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.MetricHaven.url}" dest="${kh_jars.dir}" />
@@ -95,6 +96,8 @@
 			<arg value="UnDeadAnalyzer" />
 			<arg value="${kh_jars.dir}/ConfigurationMismatchAnalyis.jar" />
 			<arg value="ConfigurationMismatchAnalysis" />
+			<arg value="${kh_jars.dir}/EntityLocatorAnalysis.jar" />
+			<arg value="EntityLocatorAnalysis" />
 			<arg value="${kh_jars.dir}/KbuildMinerExtractor.jar" />
 			<arg value="KbuildMinerExtractor" />
 			<arg value="${kh_jars.dir}/KconfigReaderExtractor.jar" />

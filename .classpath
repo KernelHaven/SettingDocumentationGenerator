@@ -8,6 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CodeBlockExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ConfigurationMismatchAnalysis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DBUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EntityLocatorAnalysis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FeatureEffectAnalysis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/IOUtils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/KbuildMinerExtractor"/>

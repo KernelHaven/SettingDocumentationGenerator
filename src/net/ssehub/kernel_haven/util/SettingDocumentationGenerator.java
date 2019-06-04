@@ -499,6 +499,7 @@ public class SettingDocumentationGenerator {
             generator.findSettingsInClassPath(new File("../UnDeadAnalyzer/bin"), "UnDeadAnalyzer");
             generator.findSettingsInClassPath(new File("../ConfigurationMismatchAnalysis/bin"),
                     "ConfigurationMismatchAnalysis");
+            generator.findSettingsInClassPath(new File("../EntityLocatorAnalysis/bin"), "EntityLocatorAnalysis");
             
             // extractors
             generator.findSettingsInClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");
