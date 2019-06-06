@@ -47,22 +47,25 @@
 	<!-- downloads all KernelHaven jars (infrastructure and plugins) from Jenkins -->
 	<target name="downloadjars" depends="prepare.folders">
 		<get src="${infrastructure.main.url}" dest="${kh_jars.dir}" />
+
 		<get src="${plugins.CnfUtils.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.TypeChefExtractor.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.UndertakerExtractor.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.srcMLExtractor.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.FeatureEffectAnalysis.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.EntityLocatorAnalysis.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.IOUtils.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.UnDeadAnalyzer.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.MetricHaven.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.KconfigReaderExtractor.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.KbuildMinerExtractor.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.NonBooleanUtils.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.ConfigurationMismatchAnalysis.url}" dest="${kh_jars.dir}" />
-		<get src="${plugins.CodeBlockExtractor.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.DBUtils.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.BusybootPreparation.url}" dest="${kh_jars.dir}/" />
+
+		<get src="${plugins.FeatureEffectAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.MetricHaven.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.UnDeadAnalyzer.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.ConfigurationMismatchAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.EntityLocatorAnalysis.url}" dest="${kh_jars.dir}" />
+
+		<get src="${plugins.KbuildMinerExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.KconfigReaderExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.srcMLExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.TypeChefExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.UndertakerExtractor.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.CodeBlockExtractor.url}" dest="${kh_jars.dir}" />
 	</target>
 
 	<!-- compiles the SettingDocumentationGenerator -->
@@ -105,13 +108,13 @@
 			<arg value="KbuildMinerExtractor" />
 			<arg value="${kh_jars.dir}/KconfigReaderExtractor.jar" />
 			<arg value="KconfigReaderExtractor" />
-			<arg value="${kh_jars.dir}/srcMLExtractor.jar" />
+			<arg value="${kh_jars.dir}/SrcMLExtractor.jar" />
 			<arg value="SrcMlExtractor" />
-			<arg value="${kh_jars.dir}/TypechefExtractor.jar" />
+			<arg value="${kh_jars.dir}/TypeChefExtractor.jar" />
 			<arg value="TypeChefExtractor" />
 			<arg value="${kh_jars.dir}/UndertakerExtractor.jar" />
 			<arg value="UndertakerExtractor" />
-			<arg value="${kh_jars.dir}/CodeblockExtractor.jar" />
+			<arg value="${kh_jars.dir}/CodeBlockExtractor.jar" />
 			<arg value="CodeBlockExtractor" />
 
 			<classpath refid="classpath.project" />
