@@ -17,7 +17,6 @@ package net.ssehub.kernel_haven.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -87,7 +86,7 @@ public class SettingDocumentationGenerator {
             + "#                        specified directory does not exist, then an exception\n"
             + "#                        is thrown. This can either be relative to the current\n"
             + "#                        working directory or an absolute path.\n"
-            + "#  * Enum: One value of an enumartion of possible values. Not case sensitive.\n"
+            + "#  * Enum: One value of an enumeration of possible values. Not case sensitive.\n"
             + "#  * Comma separated list of strings: A comma separated list of string values.\n"
             + "#  * List of setting keys: A list of string values created from multiple setting\n"
             + "#                          keys. The base key is appended by a .0 for the first\n"
@@ -219,12 +218,10 @@ public class SettingDocumentationGenerator {
                     Class<? extends Enum<?>> enumClass = ((EnumSetting<? extends Enum<?>>) setting).getEnumClass();
                     
                     List<String> fields = new LinkedList<>();
-                    for (Field field : enumClass.getFields()) {
-                        if (enumClass.isAssignableFrom(field.getType())) {
-                            fields.add(field.getName());
-                            
-                        }
-                    }
+                    Arrays.stream(enumClass.getFields())
+                        .filter((field) -> enumClass.isAssignableFrom(field.getType()))
+                        .forEach((field) -> fields.add(field.getName()));
+                    
                     enumValues.put(setting.getKey(), fields);
                     
                 }
