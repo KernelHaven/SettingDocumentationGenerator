@@ -99,7 +99,7 @@
 			<arg value="MetricHaven" />
 			<arg value="${kh_jars.dir}/UnDeadAnalyzer.jar" />
 			<arg value="UnDeadAnalyzer" />
-			<arg value="${kh_jars.dir}/ConfigurationMismatchAnalyis.jar" />
+			<arg value="${kh_jars.dir}/ConfigurationMismatchAnalysis.jar" />
 			<arg value="ConfigurationMismatchAnalysis" />
 			<arg value="${kh_jars.dir}/EntityLocatorAnalysis.jar" />
 			<arg value="EntityLocatorAnalysis" />
