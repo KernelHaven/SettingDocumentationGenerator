@@ -78,18 +78,20 @@
 			<!-- pass pairs of jar locations and section names -->
 			<arg value="${kh_jars.dir}/KernelHaven.jar" />
 			<arg value="Main Infrastructure" />
+
 			<arg value="${kh_jars.dir}/CnfUtils.jar" />
 			<arg value="CnfUtils" />
 			<arg value="${kh_jars.dir}/IOUtils.jar" />
 			<arg value="IOUtils" />
 			<arg value="${kh_jars.dir}/NonBooleanUtils.jar" />
 			<arg value="NonBooleanUtils" />
-			<arg value="${kh_jars.dir}/FeatureEffectAnalysis.jar" />
-			<arg value="FeatureEffectAnalysis" />
 			<arg value="${kh_jars.dir}/DBUtils.jar" />
 			<arg value="DBUtils" />
 			<arg value="${kh_jars.dir}/BusybootPreparation.jar" />
 			<arg value="BusybootPreparation" />
+
+			<arg value="${kh_jars.dir}/FeatureEffectAnalysis.jar" />
+			<arg value="FeatureEffectAnalysis" />
 			<arg value="${kh_jars.dir}/MetricHaven.jar" />
 			<arg value="MetricHaven" />
 			<arg value="${kh_jars.dir}/UnDeadAnalyzer.jar" />
@@ -98,6 +100,7 @@
 			<arg value="ConfigurationMismatchAnalysis" />
 			<arg value="${kh_jars.dir}/EntityLocatorAnalysis.jar" />
 			<arg value="EntityLocatorAnalysis" />
+
 			<arg value="${kh_jars.dir}/KbuildMinerExtractor.jar" />
 			<arg value="KbuildMinerExtractor" />
 			<arg value="${kh_jars.dir}/KconfigReaderExtractor.jar" />
