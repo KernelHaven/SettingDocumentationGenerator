@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import net.ssehub.kernel_haven.config.EnumSetting;
+import net.ssehub.kernel_haven.config.ListSetting;
 import net.ssehub.kernel_haven.config.Setting;
 import net.ssehub.kernel_haven.config.Setting.Type;
 import net.ssehub.kernel_haven.fe_analysis.Settings;
@@ -87,15 +88,19 @@ public class SettingDocumentationGenerator {
             + "#                        is thrown. This can either be relative to the current\n"
             + "#                        working directory or an absolute path.\n"
             + "#  * Enum: One value of an enumeration of possible values. Not case sensitive.\n"
-            + "#  * Comma separated list of strings: A comma separated list of string values.\n"
-            + "#  * List of setting keys: A list of string values created from multiple setting\n"
-            + "#                          keys. The base key is appended by a .0 for the first\n"
-            + "#                          value. The following values increase this integer.\n"
-            + "#                          For example:\n"
-            + "#                            key.0 = a\n"
-            + "#                            key.1 = b\n"
-            + "#                            key.2 = c\n"
-            + "#                          Defines the list [\"a\", \"b\", \"c\"].\n"
+            + "#  * List of (...): A list of elements of the given type. This may either be a\n"
+            + "#                   comma-separated value in the primary setting key, or a list\n"
+            + "#                   of multiple setting keys with a single value each. For the\n"
+            + "#                   latter one, the base setting key is appended by .0 for the\n"
+            + "#                   first element, .1 for the second, etc.\n"
+            + "#                   For example:\n"
+            + "#                       key.0 = a\n"
+            + "#                       key.1 = b\n"
+            + "#                       key.2 = c\n"
+            + "#                   defines the same list as:\n"
+            + "#                       key = a, b, c\n"
+            + "#                   The same type-rules as described above apply to each element\n"
+            + "#                   of the list, depending on the specified list type.\n"
             + "#\n"
             + "# This was automatically generated on: ";
 
@@ -365,7 +370,7 @@ public class SettingDocumentationGenerator {
                     result.append("# ").append(line).append("\n");
                 }
                 result.append("#\n");
-                result.append("# Type: ").append(typeToString(setting.getType())).append("\n");
+                result.append("# Type: ").append(typeToString(setting)).append("\n");
                 
                 if (setting.getType() == Type.ENUM) {
                     result.append("# Possible values: ");
@@ -385,11 +390,7 @@ public class SettingDocumentationGenerator {
                     result.append("# Mandatory: ").append(setting.isMandatory() ? "Yes" : "No").append("\n");
                 }
                 
-                String key = setting.getKey();
-                if (setting.getType() == Type.SETTING_LIST) {
-                    key += ".0";
-                }
-                result.append(key).append(" =");
+                result.append(setting.getKey()).append(" =");
                 result.append("\n\n");
             }
             
@@ -403,7 +404,23 @@ public class SettingDocumentationGenerator {
     /**
      * Converts a setting type into a human-readable string.
      * 
-     * @param type The type to get the string for.
+     * @param setting The setting to get the type string for.
+     * @return The human readable text.
+     */
+    private String typeToString(Setting<?> setting) {
+        String str;
+        if (setting.getType() == Type.LIST) {
+            str = "List of " + typeToString(((ListSetting<?>) setting).getNestedType()) + "s";
+        } else {
+            str = typeToString(setting.getType());
+        }
+        return str;
+    }
+    
+    /**
+     * Converts a setting type into a human-readable string. This is a helper method of {@link #typeToString(Setting)}.
+     * 
+     * @param type The type to get the string of. Not {@link Type#LIST}.
      * @return The human readable text.
      */
     private String typeToString(Type type) {
@@ -433,14 +450,7 @@ public class SettingDocumentationGenerator {
         case ENUM:
             str = "Enum";
             break;
-        case STRING_LIST:
-            str = "Comma separated list of strings";
-            break;
             
-        case SETTING_LIST:
-            str = "List of setting keys";
-            break;
-
         default:
             str = type.toString();
             break;
