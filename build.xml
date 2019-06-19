@@ -59,6 +59,7 @@
 		<get src="${plugins.UnDeadAnalyzer.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.ConfigurationMismatchAnalysis.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.EntityLocatorAnalysis.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.ProblemSolutionSpaceMapperAnalysis.url}" dest="${kh_jars.dir}" />
 
 		<get src="${plugins.KbuildMinerExtractor.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.KconfigReaderExtractor.url}" dest="${kh_jars.dir}" />
@@ -103,6 +104,8 @@
 			<arg value="ConfigurationMismatchAnalysis" />
 			<arg value="${kh_jars.dir}/EntityLocatorAnalysis.jar" />
 			<arg value="EntityLocatorAnalysis" />
+			<arg value="${kh_jars.dir}/ProblemSolutionSpaceMapperAnalysis.jar" />
+			<arg value="ProblemSolutionSpaceMapperAnalysis" />
 
 			<arg value="${kh_jars.dir}/KbuildMinerExtractor.jar" />
 			<arg value="KbuildMinerExtractor" />

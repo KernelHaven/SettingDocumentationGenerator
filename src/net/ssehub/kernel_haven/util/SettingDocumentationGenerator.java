@@ -507,6 +507,8 @@ public class SettingDocumentationGenerator {
             generator.findSettingsInClassPath(new File("../ConfigurationMismatchAnalysis/bin"),
                     "ConfigurationMismatchAnalysis");
             generator.findSettingsInClassPath(new File("../EntityLocatorAnalysis/bin"), "EntityLocatorAnalysis");
+            generator.findSettingsInClassPath(new File("../ProblemSolutionSpaceMapperAnalysis/bin"), 
+                   "ProblemSolutionSpaceMapperAnalysis");
             
             // extractors
             generator.findSettingsInClassPath(new File("../KbuildMinerExtractor/bin"), "KbuildMinerExtractor");

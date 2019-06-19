@@ -15,6 +15,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/KconfigReaderExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MetricHaven"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/NonBooleanUtils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ProblemSolutionSpaceMapperAnalysis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/srcMLExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TypeChefExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/UnDeadAnalyzer"/>
