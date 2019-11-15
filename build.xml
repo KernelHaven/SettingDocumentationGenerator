@@ -49,6 +49,7 @@
 		<get src="${infrastructure.main.url}" dest="${kh_jars.dir}" />
 
 		<get src="${plugins.CnfUtils.url}" dest="${kh_jars.dir}" />
+		<get src="${plugins.CppUtils.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.IOUtils.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.NonBooleanUtils.url}" dest="${kh_jars.dir}" />
 		<get src="${plugins.DBUtils.url}" dest="${kh_jars.dir}" />
