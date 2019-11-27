@@ -495,6 +495,7 @@ public class SettingDocumentationGenerator {
             
             // Utilities
             generator.findSettingsInClassPath(new File("../CnfUtils/bin"), "CnfUtils");
+            generator.findSettingsInClassPath(new File("../CppUtils/bin"), "CppUtils");
             generator.findSettingsInClassPath(new File("../IOUtils/bin"), "IOUtils");
             generator.findSettingsInClassPath(new File("../NonBooleanUtils/bin"), "NonBooleanUtils");
             generator.findSettingsInClassPath(new File("../DBUtils/bin"), "DBUtils");

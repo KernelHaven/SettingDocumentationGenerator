@@ -87,6 +87,8 @@
 
 			<arg value="${kh_jars.dir}/CnfUtils.jar" />
 			<arg value="CnfUtils" />
+			<arg value="${kh_jars.dir}/CppUtils.jar" />
+			<arg value="CppUtils" />
 			<arg value="${kh_jars.dir}/IOUtils.jar" />
 			<arg value="IOUtils" />
 			<arg value="${kh_jars.dir}/NonBooleanUtils.jar" />
